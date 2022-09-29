@@ -55,9 +55,6 @@ function Basecurrency() {
               <Currencycalculator/>
             </div>
       </div>
-      
-
-    
     </div>
   )
 }

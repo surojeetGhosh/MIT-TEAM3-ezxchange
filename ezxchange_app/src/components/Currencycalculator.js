@@ -54,25 +54,25 @@ function Currencycalculator() {
     }
   
   return (
-    <>
+    <div>
         <div>
-      <CurrencyInput
-          onAmountChange={handleAmount1Change}
-          onCurrencyChange={handleCurrency1Change}
-          currencies={Object.keys(rates)}
-          amount={amount1}
-          currency={currency1} 
-      />
+          <CurrencyInput
+              onAmountChange={handleAmount1Change}
+              onCurrencyChange={handleCurrency1Change}
+              currencies={Object.keys(rates)}
+              amount={amount1}
+              currency={currency1} 
+          />
       
-      <CurrencyInput
-          onAmountChange={handleAmount2Change}
-          onCurrencyChange={handleCurrency2Change}
-          currencies={Object.keys(rates)}
-          amount={amount2}
-          currency={currency2} 
-      />
+          <CurrencyInput
+              onAmountChange={handleAmount2Change}
+              onCurrencyChange={handleCurrency2Change}
+              currencies={Object.keys(rates)}
+              amount={amount2}
+              currency={currency2} 
+          />
+      </div>
     </div>
-    </>
   )
 }
 

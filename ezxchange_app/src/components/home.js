@@ -21,7 +21,7 @@ export default function LineCharts() {
     const [isloading, setIsLoading] = useState(true)
     const [dataArray, setDataArray] = useState(null)
     const [year, setYear] = useState(2022)
-    const [select, setSelect] = useState('year')
+    const [select, setSelect] = useState('daily')
     const [minMax, setminMax] = useState([])
     const [minMaxDate, setminMaxDate] = useState({})
     const [sortedDataArray, setSortedDataArray] = useState([])
@@ -216,7 +216,7 @@ export default function LineCharts() {
                 <div className='flex flex-row justify-end items-center p-2 gap-8 font-[Poppins] font-medium'>
                     <div className='flex flex-row justify-center items-center gap-6' onChange={handleSelectionChange}>
                         <div className='gap-2 flex flex-row justify-center items-center'> 
-                            <input type="radio" id='daily' value="daily" name='selection' select="selected"></input>
+                            <input type="radio" id='daily' value="daily" name='selection' selected="selected"></input>
                             <label for="daily">Daily</label>
                         </div>
                         <div className='gap-2 flex flex-row justify-center items-center'> 
@@ -257,11 +257,11 @@ export default function LineCharts() {
                     <h1 className='font-[Poppins] font-bold text-red py-4 text-xl'>Legends</h1>
                 </div>
 
-                <div className='flex flex-row justify-center items-center gap-12'>
+                {!isloading && <div className='flex flex-row justify-center items-center gap-12'>
                     <h1 className='font-[Poppins] font-medium'>Rate</h1>
                     <h1 className='font-[Poppins] font-medium'>Date</h1>
                     <h1 className='font-[Poppins] font-medium'>Value</h1>
-                </div>
+                </div>}
 
                 {!isloading && <div className='flex flex-row justify-center items-center gap-6'>
                     <h1 className='font-[Poppins] font-medium'>Lowest</h1>
@@ -272,6 +272,9 @@ export default function LineCharts() {
                     <h1 className='font-[Poppins] font-medium'>Highest</h1>
                     <h1 className='font-[Poppins] font-medium'>{minMaxDate['Min'][0]}</h1>
                     <h1 className='font-[Poppins] font-medium'>{minMaxDate['Min'][1]}</h1>
+                </div>}
+                {!isloading && select==='daily' && <div className='flex flex-row justify-center items-center gap-6'>
+                    <h1 className='font-[Poppins] text-red-900 font-bold'>Break in the graph suggest the Exchange rate for the date is not available</h1>
                 </div>}
             </div>
             
