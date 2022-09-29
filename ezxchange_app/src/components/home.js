@@ -274,7 +274,7 @@ export default function LineCharts() {
                     <h1 className='font-[Poppins] font-medium'>{minMaxDate['Min'][1]}</h1>
                 </div>}
                 {!isloading && select==='daily' && <div className='flex flex-row justify-center items-center gap-6'>
-                    <h1 className='font-[Poppins] text-red-900 font-bold'>Break in the graph suggest the Exchange rate for the date is not available</h1>
+                    <h1 className='font-[Poppins] text-red-900 font-bold'>Break in the graph suggests the Exchange rate for the date is not available</h1>
                 </div>}
             </div>
             
