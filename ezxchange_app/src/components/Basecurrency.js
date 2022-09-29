@@ -14,7 +14,7 @@ function Basecurrency() {
     }, []);
 
     const getrates = async (base) => {
-        const res = await axios.get(`https://api.apilayer.com/fixer/latest?base=${base}&apikey=OD47jKU22Z9k8Oo9JIwS99BaTPhBBNjK`);
+        const res = await axios.get(`https://api.apilayer.com/fixer/latest?base=${base}&apikey=OD47jKU22Z9dgdk8Oo9JIwS99BaTPhBBNjK`);
         const {rates} = res.data;
         const ratestemp = [];
         for (const [symbol, rate] of Object.entries(rates)) {

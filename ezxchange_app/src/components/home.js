@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import '../../src/App.css'
-import Chart from "react-apexcharts"; 
 
+import Chart from "react-apexcharts"; 
 import { yearly } from './routines';
 import { daily } from './routines';
 import { quarter } from './routines';
@@ -9,6 +9,8 @@ import { month } from './routines';
 import { week } from './routines';
 import { countryCode } from './routines';
 import { MaxMin } from './routines';
+import { MaxMin2 } from './routines';
+
 const axios = require('axios')
 
 
@@ -21,10 +23,11 @@ export default function LineCharts() {
     const [year, setYear] = useState(2022)
     const [select, setSelect] = useState('year')
     const [minMax, setminMax] = useState([])
+    const [minMaxDate, setminMaxDate] = useState({})
     const [sortedDataArray, setSortedDataArray] = useState([])
 
     let arr = []
-    const [currency_country, setCurrency_country] = useState(['INR','AUD','EUR'])
+    const [currency_country, setCurrency_country] = useState([])
     
     const [dArr, setdArr] = useState([])
 
@@ -51,6 +54,9 @@ export default function LineCharts() {
         setCurrency_country(Array.from(country_code))
         let minmaxIdx = MaxMin(sortedData, currency)
         setminMax(minmaxIdx)
+        let minmaxData = MaxMin2(sortedData, currency)
+        setminMaxDate(minmaxData)
+        console.log(minmaxData)
        
         Object.entries(sortedData).forEach(function([k,v]){
             if(v[1][currency] === undefined){
@@ -66,7 +72,6 @@ export default function LineCharts() {
 
     async function fetch_data2(curr)
     {
-        console.log(curr)
         setIsLoading(true)
         let res_data = await axios.get(`https://ezxchange-755d0-default-rtdb.firebaseio.com/${year}.json`)
         setDataArray(res_data)
@@ -87,8 +92,11 @@ export default function LineCharts() {
         setSortedDataArray(sortedData)
         let country_code = countryCode(sortedData)
         setCurrency_country(Array.from(country_code))
-        let minmaxIdx = MaxMin(sortedData, currency)
+        let minmaxIdx = MaxMin(sortedData, curr)
         setminMax(minmaxIdx)
+        let minmaxData = MaxMin2(sortedData, curr)
+        setminMaxDate(minmaxData)
+        console.log(minmaxData)
        
         Object.entries(sortedData).forEach(function([k,v]){
             if(v[1][curr] === undefined){
@@ -104,7 +112,6 @@ export default function LineCharts() {
 
     async function fetch_data3(year_curr)
     {
-        console.log(year_curr)
         setIsLoading(true)
         let res_data = await axios.get(`https://ezxchange-755d0-default-rtdb.firebaseio.com/${year_curr}.json`)
         setDataArray(res_data)
@@ -127,6 +134,9 @@ export default function LineCharts() {
         setCurrency_country(Array.from(country_code))
         let minmaxIdx = MaxMin(sortedData, currency)
         setminMax(minmaxIdx)
+        let minmaxData = MaxMin2(sortedData, currency)
+        setminMaxDate(minmaxData)
+        console.log(minmaxData)
        
         Object.entries(sortedData).forEach(function([k,v]){
             if(v[1][currency] === undefined){
@@ -190,12 +200,13 @@ export default function LineCharts() {
 
 
     return(
-        <div className=''>
+        <div>
             <div className='container mt-12 w-3/4 mx-auto flex flex-row justify-between items-center shadow-md shadow-gray-500 p-2 rounded-xl'>
                 <div className='flex flex-row justify-start items-center p-2 gap-8'>
                     <select name="currency_1" className='bg-transparent font-[Poppins] font-medium'>
                         <option value="USD" selected className='p-4'>USA</option>
                     </select>
+                    <h1 className='font-[Poppins] font-bold'>VS</h1>
                     <select name="currency_2" className='bg-transparent font-[Poppins] font-medium' onChange={handleCurrencyChange2}>
                         {currency_country.map((data, i)=>(
                             <option value={data} key={i} className='p-4'>{data}</option>
@@ -240,12 +251,28 @@ export default function LineCharts() {
                         <option value="2012" className='p-4'>2012</option>
                     </select>
                 </div>
+            </div>
+            <div className='container mx-auto flex flex-col gap-4 justify-center items-center h-max w-3/4 mt-4 p-2 shadow-sm shadow-gray-500 rounded-xl'>
+                <div className='flex flex-row justify-center items-center'>
+                    <h1 className='font-[Poppins] font-bold text-red py-4 text-xl'>Legends</h1>
                 </div>
+
+                {!isloading && <div className='flex flex-row justify-center items-center gap-6'>
+                    <h1 className='font-[Poppins] font-medium'>Lowest Exchange Rate</h1>
+                    <h1 className='font-[Poppins] font-medium'>{minMaxDate['Max'][0]}</h1>
+                    <h1 className='font-[Poppins] font-medium'>{minMaxDate['Max'][1]}</h1>
+                </div>}
+                {!isloading && <div className='flex flex-row justify-center items-center gap-6'>
+                    <h1 className='font-[Poppins] font-medium'>Highest Exchange Rate</h1>
+                    <h1 className='font-[Poppins] font-medium'>{minMaxDate['Min'][0]}</h1>
+                    <h1 className='font-[Poppins] font-medium'>{minMaxDate['Min'][1]}</h1>
+                </div>}
+            </div>
             
             <div className='container mx-auto flex flex-col justify-center items-center h-96 w-3/4 mt-4 p-2'>
-            {isloading && <img src='spinner.gif' alt='loader' className='mt-36 w-16'></img>}
+                {isloading && <img src='spinner.gif' alt='loader' className='mt-36 w-16'></img>}
             
-            {!isloading && <Chart className='w-full h-max p-2 shadow-md rounded-xl shadow-gray-600'
+                {!isloading && select==='daily' && <Chart className='w-full h-max p-2 shadow-md rounded-xl shadow-gray-600'
                     width= {"100%"}
                     height= {"100%"}
                     options ={{chart: {
@@ -344,6 +371,18 @@ export default function LineCharts() {
                     stroke:{
                         curve:'smooth'
                     },
+                    noData: {
+                        text: 'Missing Data',
+                        align: 'center',
+                        verticalAlign: 'middle',
+                        offsetX: 0,
+                        offsetY: 0,
+                        style: {
+                          color: undefined,
+                          fontSize: '14px',
+                          fontFamily: undefined
+                        }
+                      },
                     markers: {
                         discrete: [{
                             seriesIndex: 0,
@@ -373,6 +412,140 @@ export default function LineCharts() {
 
                     type="line"
                 />}
+
+
+
+                {!isloading && select!=='daily' && <Chart className='w-full h-max p-2 shadow-md rounded-xl shadow-gray-600'
+                    width= {"100%"}
+                    height= {"100%"}
+                    options ={{chart: {
+                        type: 'line',
+                        toolbar: {
+                        show: false,
+                        autoSelected: 'pan'
+                        },
+                        zoom: {
+                        enabled: false
+                        }
+                    },
+                    tooltip: {
+                        theme: "dark"
+                      },
+                      fill: {
+                        gradient: {
+                          enabled: true,
+                          opacityFrom: 0.55,
+                          opacityTo: 0
+                        }
+                      },
+                    grid:{
+                        show:false
+                    },
+                    title: {
+                        text: 'EzXchange',
+                        align: 'Center',
+                        margin: 10,
+                        offsetX: 0,
+                        offsetY: 0,
+                        floating: false,
+                        style: {
+                          fontSize:  '20px',
+                          fontWeight:  'bold',
+                          fontFamily:  'Poppins',
+                          color:  '#263238'
+                        },
+                    },
+                    xaxis:{
+                        offsetY:20,
+                        labels: {
+                            show: true,
+                            align: 'right',
+                            minWidth: 0,
+                            maxWidth: 160,
+                            style: {
+                                colors: [],
+                                fontSize: '12px',
+                                fontFamily: 'Poppins Helvetica, Arial, sans-serif',
+                                fontWeight: 600,
+                                cssClass: 'apexcharts-yaxis-label',
+                            }},
+                        tickAmount: 10,
+                        categories: Object.keys(dArr),
+                        title: {
+                            text: 'Time Stamp',
+                            offsetX: 0,
+                            offsetY: 0,
+                            style: {
+                                color: 'black',
+                                fontSize: '15px',
+                                fontFamily: 'Poppins Helvetica, Arial, sans-serif',
+                                fontWeight: 600,
+                                cssClass: 'apexcharts-xaxis-title',
+                            },
+                        },
+                    },
+                    yaxis:{
+                        labels: {
+                            show: true,
+                            align: 'right',
+                            minWidth: 0,
+                            maxWidth: 160,
+                            offsetX:-7,
+                            style: {
+                                colors: [],
+                                fontSize: '12px',
+                                fontFamily: 'Poppins Helvetica, Arial, sans-serif',
+                                fontWeight: 600,
+                                cssClass: 'apexcharts-yaxis-label',
+                            }},
+                        title: {
+                            text: `Currency`,
+                            offsetX: 0,
+                            offsetY: 0,
+                            style: {
+                                color: 'black',
+                                fontSize: '15px',
+                                fontFamily: 'Poppins Helvetica, Arial, sans-serif',
+                                fontWeight: 600,
+                                cssClass: 'apexcharts-xaxis-title',
+                            },
+                        },
+                    },
+                    stroke:{
+                        curve:'smooth'
+                    },
+                    noData: {
+                        text: 'Missing Data',
+                        align: 'center',
+                        verticalAlign: 'middle',
+                        offsetX: 0,
+                        offsetY: 0,
+                        style: {
+                          color: undefined,
+                          fontSize: '14px',
+                          fontFamily: undefined
+                        }
+                      },
+                    
+                    legend: {
+                        position: 'right',
+                        offsetY: 40,
+                    },
+                    }}
+                    series = {[{
+                        name: 'Currency',
+                        data: Object.values(dArr)
+                    }]}
+
+                    type="line"
+                />}
+
+
+
+
+
+
+
             </div>
         </div>
     )
