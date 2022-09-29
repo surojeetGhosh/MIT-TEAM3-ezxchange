@@ -12,6 +12,7 @@
     "apexcharts": "^3.35.5",
     "axios": "^0.27.2",
     "framer-motion": "^7.4.0",
+    "luxon": "^3.0.4",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.0",
     "react-dom": "^18.2.0",
