@@ -5,33 +5,33 @@ const axios = require('axios')
 
 
 export default function LineCharts() {
+
+    let null_index = []
     const [month, setMonth] = useState(['Jan', 'Feb', 'Mar', 'Apr'])
-    const [currency1, setCurrency1] = useState(['USD', 'INR', 'AUD', 'EUR'])
-    const [currency2, setCurrency2] = useState(['INR', 'AUD', 'EUR'])
+    const [currency, setCurrency] = useState('INR')
     const [isloading, setIsLoading] = useState(true)
     const [dataArray, setDataArray] = useState(null)
-    let initial_values = {"currency_1":'USD', "currency_2":'INR', "week":'w1', "month":month, "quarter":'q1', "year":2022}
-    const [fetchData, setFetchData] = useState(initial_values)
+    const [year, setYear] = useState(2022)
+    const [select, setSelect] = useState('year')
+    // let initial_values = {"currency_1":'USD', "currency_2":currency, "week":'w1', "month":month, "quarter":'q1', "year":2022}
+    // const [fetchData, setFetchData] = useState(initial_values)
     let arr = []
-    let arr2 = []
-    let currency_country = ['AUD', 'INR', 'USD', 'EUR']
+    let currency_country = ['AUD', 'INR', 'EUR']
     
     const [dArr, setdArr] = useState([])
 
     async function fetch_data()
     {
         setIsLoading(true)
-        console.log(`${fetchData.year}`)
-        let res_data = await axios.get(`https://ezxchange-755d0-default-rtdb.firebaseio.com/${fetchData.year}.json`)
+        let res_data = await axios.get(`https://ezxchange-755d0-default-rtdb.firebaseio.com/${year}.json`)
         setDataArray(res_data)
 
-        Object.entries(res_data.data).forEach(function([k,v]){if(v.INR){arr.push(v.INR)}})
-        arr = Object.entries(arr).sort(function (a, b) {
+        var sortedData = Object.entries(res_data.data).sort(function (a, b) {
             var lt = a[0].split('-');
             var daya = Number(lt[0]);
             var montha = lt[1];
             var yeara = Number(lt[2]);
-                var lt = b[0].split('-');
+                 lt = b[0].split('-');
             var dayb = Number(lt[0]);
             var monthb = lt[1];
             var yearb = Number(lt[2]);
@@ -39,137 +39,119 @@ export default function LineCharts() {
             return yeara - yearb || MONTH[montha] - MONTH[monthb] || daya - dayb;
         });
         
-        arr.map((value, i)=>{
-             arr2.push(value.pop(2))
+
+        Object.entries(sortedData).forEach(function([k,v]){
+            if(v[1][currency] === undefined){
+                arr[v[0]] = undefined;
+                null_index.push(v[0])
+            }
+            else arr[v[0]] = v[1][currency]
         })
         
-        console.log(currency_country)
-        setdArr(arr2)
+        setdArr(arr)
         setIsLoading(false)
     }
 
 
     
-    const handleFormChange = (e)=>{
-        console.log(e.target.value)
-        const { name, value } = e.target
-        setFetchData({ ...fetchData, [name]: value })
-    }
-
-
-    const handleCurrencyChange1 = (e)=>{
-        console.log(e.target.value)
-        const { name, value } = e.target
-        setFetchData({ ...fetchData, [name]: value })
-        console.log(e.target.value)
-        setCurrency2(currency_country.splice(e.target.value))
-    }
+    // const handleFormChange = (e)=>{
+    //     const { name, value } = e.target
+    //     setFetchData({ ...fetchData, [name]: value })
+    // }
 
     const handleCurrencyChange2 = (e)=>{
+        setCurrency(e.target.value)
         console.log(e.target.value)
-        const { name, value } = e.target
-        setFetchData({ ...fetchData, [name]: value })
-        console.log(e.target.value)
-        setCurrency1(currency_country.splice(e.target.value))
+        fetch_data()
+    }
+
+    const handleSelectionChange = (e)=>{
+        // console.log(e.target.value)
+        setSelect(e.target.value)
     }
 
     const handleYearChange = (e)=>{
-        console.log(e.target.value)
-        const { name, value } = e.target
-        setFetchData({ ...fetchData, [name]: value })
+        setYear(e.target.value)
         fetch_data()
     }
 
-    const month_arr =['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
-    const handleQuarterChange = (e)=>{
-        console.log(e.target.value)
-        const { name, value } = e.target
-        setFetchData({ ...fetchData, [name]: value })
-        if(e.target.value === 'q1')
-        {
-            let month_arr2 = month_arr.slice(0, 3)
-            setMonth(month_arr2)
-        }
-        if(e.target.value === 'q2')
-        {
-            let month_arr2 = month_arr.slice(3, 6)
-            setMonth(month_arr2)
-        }
-        if(e.target.value === 'q3')
-        {
-            let month_arr2 = month_arr.slice(6, 9)
-            setMonth(month_arr2)
-        }
-        if(e.target.value === 'q4')
-        {
-            let month_arr2 = month_arr.slice(9, 12)
-            setMonth(month_arr2)
-        }
-    }
-
-
+    // const month_arr =['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
+    // const handleQuarterChange = (e)=>{
+    //     const { name, value } = e.target
+    //     setFetchData({ ...fetchData, [name]: value })
+    //     if(e.target.value === 'q1')
+    //     {
+    //         let month_arr2 = month_arr.slice(0, 3)
+    //         setMonth(month_arr2)
+    //     }
+    //     if(e.target.value === 'q2')
+    //     {
+    //         let month_arr2 = month_arr.slice(3, 6)
+    //         setMonth(month_arr2)
+    //     }
+    //     if(e.target.value === 'q3')
+    //     {
+    //         let month_arr2 = month_arr.slice(6, 9)
+    //         setMonth(month_arr2)
+    //     }
+    //     if(e.target.value === 'q4')
+    //     {
+    //         let month_arr2 = month_arr.slice(9, 12)
+    //         setMonth(month_arr2)
+    //     }
+    // }
 
     useEffect(() => {
         fetch_data()
-        console.log(dArr)
         if(dArr.length!==0){
             setIsLoading(false)
         }
       }, dataArray);
 
 
-    // console.log(dataArray?.data)
-    //   console.log(Object.keys(dataArray.data))
-    //   console.log(Object.values(dataArray.data))
-    //   let x = Object.values(dataArray.data)
-    //   console.log(x[0])
-    //   console.log(x[0]['AED']
 
     return(
         <div className=''>
             <div className='container mt-12 w-3/4 mx-auto flex flex-row justify-between items-center'>
                 <div className='flex flex-row justify-start items-center p-2 gap-8'>
-                    <select name="currency_1" className='bg-transparent' value={fetchData.currency_1} onChange={handleCurrencyChange1}>
-                        {/* <option value="USD" selected className='p-4'>USA</option>
-                        <option value="Country3" className='p-4'>Country3</option>
-                        <option value="Country4" className='p-4'>Country4</option>
-                        <option value="Country1" className='p-4'>Country1</option>
-                        <option value="Country2" className='p-4'>Country2</option> */}
-                        {currency_country.map((data, i)=>{
-                           return <option value={i} key={i} selected className='p-4'>{data}</option>
-                        })}
-
+                    <select name="currency_1" className='bg-transparent'>
+                        <option value="USD" selected className='p-4'>USA</option>
                     </select>
-                    <select name="currency_2" className='bg-transparent' value={fetchData.currency_2} onChange={handleCurrencyChange2}>
-                        <option value="INR" selected className='p-4'>USA</option>
-                        <option value="Country3" className='p-4'>Country3</option>
-                        <option value="Country4" className='p-4'>Country4</option>
-                        <option value="Country1" className='p-4'>Country1</option>
-                        <option value="Country2" className='p-4'>Country2</option>
+                    <select name="currency_2" className='bg-transparent' value={currency} onChange={handleCurrencyChange2}>
+                        {currency_country.map((data, i)=>{
+                           return <option value={data} key={i} className='p-4'>{data}</option>
+                        })}
                     </select>
                 </div>
                 <div className='flex flex-row justify-end items-center p-2 gap-8'>
-                    <select name="week" className='bg-transparent' value={fetchData.week} onChange={handleFormChange}>
+                    {/* <select name="week" className='bg-transparent' value={fetchData.week} onChange={handleFormChange}>
                         <option value="w1" selected className='p-4'>Week 1</option>
                         <option value="w2" className='p-4'>Week 2</option>
                         <option value="w3" className='p-4'>Week 3</option>
                         <option value="w4" className='p-4'>Week 4</option>
-                    </select>
-                    <select name="month" className='bg-transparent' value={fetchData.month} onChange={handleFormChange}>
-                        {/* <option value="m1" selected className='p-4'>Jan</option>
-                        <option value="m2" className='p-4'>Feb</option>
-                        <option value="m3" className='p-4'>Mar</option>
-                        <option value="m4" className='p-4'>Apr</option>
-                        <option value="m5" className='p-4'>May</option>
-                        <option value="m6" className='p-4'>June</option>
-                        <option value="m7" className='p-4'>July</option>
-                        <option value="m8" className='p-4'>Aug</option>
-                        <option value="m9" className='p-4'>Sept</option>
-                        <option value="m10" className='p-4'>Oct</option>
-                        <option value="m11" className='p-4'>Nov</option>
-                        <option value="m12" className='p-4'>Dec</option> */}
+                    </select> */}
+                    <div className='flex flex-row justify-center items-center gap-6' onChange={handleSelectionChange}>
+                        <div className='gap-2 flex flex-row justify-center items-center'> 
+                            <input type="radio" id='week' value="week" name='selection'></input>
+                            <label for="week">Weekly</label>
+                        </div>
+                        <div className='gap-2 flex flex-row justify-center items-center'> 
+                            <input type="radio" id='month' value="month" name='selection'></input>
+                            <label for="month">Monthly</label>
+                        </div>
+                        <div className='gap-2 flex flex-row justify-center items-center'> 
+                            <input type="radio" id='quarter' value="quarter" name='selection'></input>
+                            <label for="quarter">Quarterly</label>
+                        </div>
+                        <div className='gap-2 flex flex-row justify-center items-center'> 
+                            <input type="radio" id='year' value="year" name='selection'></input>
+                            <label for="year">Yearly</label>
+                        </div>
+                    </div>
+                    
+                    
 
-
+                    {/* <select name="month" className='bg-transparent' value={fetchData.month} onChange={handleFormChange}>
                         {month.map((data, i)=>{
                            return <option value={i} key={i} selected className='p-4'>{data}</option>
                         })}
@@ -179,8 +161,8 @@ export default function LineCharts() {
                         <option value="q2" className='p-4'>2nd quarter</option>
                         <option value="q3" className='p-4'>3rd quarter</option>
                         <option value="q4" className='p-4'>4th quarter</option>
-                    </select>
-                    <select name="year" className='bg-transparent' value={fetchData.year} onChange={handleYearChange}>
+                    </select> */}
+                    <select name="year" className='bg-transparent' value={year} onChange={handleYearChange}>
                         <option value="2022" selected className='p-4'>2022</option>
                         <option value="2021" className='p-4'>2021</option>
                         <option value="2020" className='p-4'>2020</option>
@@ -197,45 +179,36 @@ export default function LineCharts() {
                 </div>
             
             <div className='container mx-auto flex flex-col justify-center items-center h-1/2 overflow-scroll w-3/4 mt-4  scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent' >
-            {isloading && <img src='spinner.gif' className='mt-36 w-16'></img>}
+            {isloading && <img src='spinner.gif' alt='loader' className='mt-36 w-16'></img>}
             
-            {!isloading && <Chart className=''
+            {!isloading && <Chart
                     width= {"400%"}
                     height= {"300%"}
                     options ={{chart: {
                         type: 'line',
-                        // height: 350,
-
-                    
                         toolbar: {
                         show: false
                         },
                         zoom: {
-                        enabled: true
+                        enabled: false
                         }
                     },
                     xaxis:{
                         tickAmount: 20,
+                        categories: Object.keys(dArr)
                     },
                     stroke:{
                         curve:'smooth'
                     },
                     markers: {
-                        discrete: [{
+                        discrete: {
                           seriesIndex: 0,
                           dataPointIndex: 7,
                           fillColor: '#ff0000',
                           strokeColor: '#fff',
                           size: 5,
-                          shape: "circle" // "circle" | "square" | "rect"
-                        }, {
-                          seriesIndex: 0,
-                          dataPointIndex: 11,
-                          fillColor: '#ff0000',
-                          strokeColor: '#eee',
-                          size: 5,
-                          shape: "circle" // "circle" | "square" | "rect"
-                        }]
+                          shape: "circle"
+                        }
                       },
                     legend: {
                         position: 'right',
@@ -244,7 +217,7 @@ export default function LineCharts() {
                     }}
                     series = {[{
                         name: 'Currency',
-                        data : dArr
+                        data: Object.values(dArr)
                     }]}
 
                     type="line"
