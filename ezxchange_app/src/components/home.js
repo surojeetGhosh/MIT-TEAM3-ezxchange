@@ -329,7 +329,7 @@ export default function LineCharts() {
                                 cssClass: 'apexcharts-yaxis-label',
                             }},
                         title: {
-                            text: `Currency - ${currency}`,
+                            text: `Currency`,
                             offsetX: 0,
                             offsetY: 0,
                             style: {

@@ -1,0 +1,17 @@
+table {
+    width: 800px;
+    height: 200px;
+}
+
+th {
+    font-size: large;
+    border-bottom: 3px solid rgb(118, 183, 224);
+}
+
+tr:nth-child(even) {
+    background-color: rgb(240, 227, 239);
+}
+
+td {
+    text-align: center;
+}
