@@ -257,13 +257,19 @@ export default function LineCharts() {
                     <h1 className='font-[Poppins] font-bold text-red py-4 text-xl'>Legends</h1>
                 </div>
 
+                <div className='flex flex-row justify-center items-center gap-12'>
+                    <h1 className='font-[Poppins] font-medium'>Rate</h1>
+                    <h1 className='font-[Poppins] font-medium'>Date</h1>
+                    <h1 className='font-[Poppins] font-medium'>Value</h1>
+                </div>
+
                 {!isloading && <div className='flex flex-row justify-center items-center gap-6'>
-                    <h1 className='font-[Poppins] font-medium'>Lowest Exchange Rate</h1>
+                    <h1 className='font-[Poppins] font-medium'>Lowest</h1>
                     <h1 className='font-[Poppins] font-medium'>{minMaxDate['Max'][0]}</h1>
                     <h1 className='font-[Poppins] font-medium'>{minMaxDate['Max'][1]}</h1>
                 </div>}
                 {!isloading && <div className='flex flex-row justify-center items-center gap-6'>
-                    <h1 className='font-[Poppins] font-medium'>Highest Exchange Rate</h1>
+                    <h1 className='font-[Poppins] font-medium'>Highest</h1>
                     <h1 className='font-[Poppins] font-medium'>{minMaxDate['Min'][0]}</h1>
                     <h1 className='font-[Poppins] font-medium'>{minMaxDate['Min'][1]}</h1>
                 </div>}
