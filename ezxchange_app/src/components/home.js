@@ -59,7 +59,7 @@ export default function LineCharts() {
         if(isCurrencyExist(sortedData, currency)){
             Object.entries(sortedData).forEach(function([k,v]){
                 if(v[1][currency] === undefined){
-                    arr[v[0] + " Not Available"] = 0;
+                    arr[v[0] + " Not Available"] = null;
                     null_index.push(v[0])
                 }
                 else arr[v[0]] = v[1][currency]
@@ -100,7 +100,7 @@ export default function LineCharts() {
         if(isCurrencyExist(sortedData, curr)){
             Object.entries(sortedData).forEach(function([k,v]){
                 if(v[1][curr] === undefined){
-                    arr[v[0] + " Not Available"] = 0;
+                    arr[v[0] + " Not Available"] = null;
                     null_index.push(v[0])
                 }
                 else arr[v[0]] = v[1][curr]
@@ -141,7 +141,7 @@ export default function LineCharts() {
         if(isCurrencyExist(sortedData, currency)){
             Object.entries(sortedData).forEach(function([k,v]){
                 if(v[1][currency] === undefined){
-                    arr[v[0] + " Not Available"] = 0;
+                    arr[v[0] + " Not Available"] = null;
                     null_index.push(v[0])
                 }
                 else arr[v[0]] = v[1][currency]

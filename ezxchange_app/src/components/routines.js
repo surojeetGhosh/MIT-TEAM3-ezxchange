@@ -10,7 +10,7 @@ export const isCurrencyExist = (data, currency) => {
 export const daily = (data, currency) => {
     const arr = {};
     Object.entries(data).forEach(function([k,v]){  // daywise
-        if(v[1][currency] === undefined) arr[v[0]+ " Not Available"] = 0;
+        if(v[1][currency] === undefined) arr[v[0]+ " Not Available"] = null;
         else arr[v[0]] = v[1][currency]
     })
     return arr;
@@ -29,7 +29,7 @@ export const yearly = (data, currency) => {
 
 export const quarter = (data, currency) => {
     var entries = Object.entries(data).filter(function([k,v]){  
-        if(v[1][currency] === 0) return false;
+        if(v[1][currency] === null) return false;
         else return true;
     })
     const monthWiseData = {};
@@ -41,7 +41,7 @@ export const quarter = (data, currency) => {
         }
     })
     const nonNull_MonthData = Object.fromEntries(Object.entries(monthWiseData).filter(([k, v]) => {
-                                if(v === 0) return false;
+                                if(v === null) return false;
                                 return true;
                             }))
     const quarterWiseData = {"Q1": undefined, "Q2": undefined, "Q3": undefined, "Q4": undefined};
@@ -70,7 +70,7 @@ export const quarter = (data, currency) => {
 export const month = (data, currency) => {
     const arr = {};
     var entries = Object.entries(data).filter(function([k,v]){  
-        if(v[1][currency] === 0) return false;
+        if(v[1][currency] === null) return false;
         else return true;
     })
     entries.forEach(([k, v]) => {  // monthwise data
@@ -86,7 +86,7 @@ export const month = (data, currency) => {
 export const week = (data, currency) => {
     const arr = {};
     var entries = Object.entries(data).filter(function([k,v]){  
-        if(v[1][currency] === 0) return false;
+        if(v[1][currency] === null) return false;
         else return true;
     })
     Object.entries(entries).forEach(([k, v]) => {
@@ -119,7 +119,7 @@ export const MaxMin = (data, currency) => {
         const values_Arr = Object.values(arr);
         const objVal = {};
         values_Arr.forEach((i, j) => {
-            if(i !== 0)
+            if(i !== null)
             objVal[j] = i;
         });
         var sortedObj = Object.entries(objVal).sort((a, b)=> {
@@ -143,7 +143,7 @@ export const MaxMin2 = (data, currency) => {
         const values_Arr = Object.values(arr);
         const objVal = {};
         values_Arr.forEach((i, j) => {
-            if(i !== 0)
+            if(i !== null)
             objVal[j] = i;
         });
         var sortedObj = Object.entries(objVal).sort((a, b)=> {
