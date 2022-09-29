@@ -95,6 +95,41 @@ export default function LineCharts() {
         setIsLoading(false)
     }
 
+    async function fetch_data3(year_curr)
+    {
+        console.log(year_curr)
+        setIsLoading(true)
+        let res_data = await axios.get(`https://ezxchange-755d0-default-rtdb.firebaseio.com/${year_curr}.json`)
+        setDataArray(res_data)
+
+        var sortedData = Object.entries(res_data.data).sort(function (a, b) {
+            var lt = a[0].split('-');
+            var daya = Number(lt[0]);
+            var montha = lt[1];
+            var yeara = Number(lt[2]);
+                 lt = b[0].split('-');
+            var dayb = Number(lt[0]);
+            var monthb = lt[1];
+            var yearb = Number(lt[2]);
+            var MONTH = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
+            return yeara - yearb || MONTH[montha] - MONTH[monthb] || daya - dayb;
+        });
+
+        setSortedDataArray(sortedData)
+        
+       
+        Object.entries(sortedData).forEach(function([k,v]){
+            if(v[1][currency] === undefined){
+                arr[v[0]] = undefined;
+                null_index.push(v[0])
+            }
+            else arr[v[0]] = v[1][currency]
+        })
+        
+        setdArr(arr)
+        setIsLoading(false)
+    }
+
 
     const handleCurrencyChange2 = (e)=>{
         setCurrency(e.target.value)
@@ -103,25 +138,25 @@ export default function LineCharts() {
 
     const handleSelectionChange = (e)=>{
         setSelect(e.target.value)
-        if(select === 'year'){
+        if(e.target.value === 'year'){
             let array_yearly = yearly(sortedDataArray, currency)
             setdArr(array_yearly)
             console.log(array_yearly)
         }
 
-        else if(select === 'quarter'){
+        else if(e.target.value === 'quarter'){
             let array_quarterly = quarter(sortedDataArray, currency)
             setdArr(array_quarterly)
             console.log(array_quarterly)
         }
 
-        else if(select === 'month'){
+        else if(e.target.value === 'month'){
             let array_monthly = month(sortedDataArray, currency)
             setdArr(array_monthly)
             console.log(array_monthly)
         }
 
-        else if(select === 'week'){
+        else if(e.target.value === 'week'){
             let array_weekly = week(sortedDataArray, currency)
             setdArr(array_weekly)
             console.log(array_weekly)
@@ -130,7 +165,7 @@ export default function LineCharts() {
 
     const handleYearChange = (e)=>{
         setYear(e.target.value)
-        fetch_data()
+        fetch_data3(e.target.value)
     }
 
     // const month_arr =['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
@@ -202,7 +237,7 @@ export default function LineCharts() {
                             <label for="quarter">Quarterly</label>
                         </div>
                         <div className='gap-2 flex flex-row justify-center items-center'> 
-                            <input type="radio" id='year' value="year" name='selection' selected></input>
+                            <input type="radio" id='year' value="year" name='selection'></input>
                             <label for="year">Yearly</label>
                         </div>
                     </div>
