@@ -94,3 +94,28 @@ export const week = (data, currency) => {
     })
     return arr;
 };
+
+export const countryCode = (data) => {
+    let arr = new Set([]);
+    Object.entries(data).forEach(([k, v]) => {
+        Object.keys(v[1]).forEach((k) => {
+            arr.add(k);
+        })
+    })
+    return arr;
+}
+
+export const MaxMin = (data, currency) => {
+    const arr = daily(data, currency);
+    const keys_Arr = Object.keys(arr);
+    const values_Arr = Object.values(arr);
+    let maxIdx = 0;
+    let minIdx = 0;
+    values_Arr.forEach((i, j) => {
+        if(values_Arr[maxIdx] < values_Arr[j]) maxIdx = j;
+        if(values_Arr[minIdx] > values_Arr[j]) minIdx = j;
+    })
+    // return { Max: [keys_Arr[maxIdx], values_Arr[maxIdx]], Min: [keys_Arr[minIdx], values_Arr[minIdx]]};
+    return [minIdx, maxIdx];
+
+}
