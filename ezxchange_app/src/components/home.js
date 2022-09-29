@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import '../../src/App.css'
 
 import Chart from "react-apexcharts"; 
-import { yearly } from './routines';
+import { isCurrencyExist, yearly } from './routines';
 import { daily } from './routines';
 import { quarter } from './routines';
 import { month } from './routines';
@@ -10,6 +10,7 @@ import { week } from './routines';
 import { countryCode } from './routines';
 import { MaxMin } from './routines';
 import { MaxMin2 } from './routines';
+import CountryCode from "./CountryCode";
 
 const axios = require('axios')
 
@@ -17,6 +18,7 @@ const axios = require('axios')
 export default function LineCharts() {
 
     let null_index = []
+    const currency_country = CountryCode;
     const [currency, setCurrency] = useState('INR')
     const [isloading, setIsLoading] = useState(true)
     const [dataArray, setDataArray] = useState(null)
@@ -27,7 +29,6 @@ export default function LineCharts() {
     const [sortedDataArray, setSortedDataArray] = useState([])
 
     let arr = []
-    const [currency_country, setCurrency_country] = useState([])
     
     const [dArr, setdArr] = useState([])
 
@@ -50,23 +51,24 @@ export default function LineCharts() {
             return yeara - yearb || MONTH[montha] - MONTH[monthb] || daya - dayb;
         });
         setSortedDataArray(sortedData)
-        let country_code = countryCode(sortedData)
-        setCurrency_country(Array.from(country_code))
         let minmaxIdx = MaxMin(sortedData, currency)
         setminMax(minmaxIdx)
         let minmaxData = MaxMin2(sortedData, currency)
         setminMaxDate(minmaxData)
-        console.log(minmaxData)
-       
-        Object.entries(sortedData).forEach(function([k,v]){
-            if(v[1][currency] === undefined){
-                arr[v[0]] = undefined;
-                null_index.push(v[0])
-            }
-            else arr[v[0]] = v[1][currency]
-        })
-        
-        setdArr(arr)
+        console.log(isCurrencyExist(sortedData, currency))
+        if(isCurrencyExist(sortedData, currency)){
+            Object.entries(sortedData).forEach(function([k,v]){
+                if(v[1][currency] === undefined){
+                    arr[v[0] + " Not Available"] = 0;
+                    null_index.push(v[0])
+                }
+                else arr[v[0]] = v[1][currency]
+            })
+            
+            setdArr(arr)
+        } else {
+            setdArr({});
+        }
         setIsLoading(false)
     }
 
@@ -90,23 +92,24 @@ export default function LineCharts() {
         });
 
         setSortedDataArray(sortedData)
-        let country_code = countryCode(sortedData)
-        setCurrency_country(Array.from(country_code))
-        let minmaxIdx = MaxMin(sortedData, curr)
-        setminMax(minmaxIdx)
-        let minmaxData = MaxMin2(sortedData, curr)
+        let minmaxIdx = MaxMin(sortedData, curr);
+        setminMax(minmaxIdx);
+        let minmaxData = MaxMin2(sortedData, currency)
         setminMaxDate(minmaxData)
-        console.log(minmaxData)
-       
-        Object.entries(sortedData).forEach(function([k,v]){
-            if(v[1][curr] === undefined){
-                arr[v[0]] = undefined;
-                null_index.push(v[0])
-            }
-            else arr[v[0]] = v[1][curr]
-        })
-        
-        setdArr(arr)
+        console.log(isCurrencyExist(sortedData, curr))
+        if(isCurrencyExist(sortedData, curr)){
+            Object.entries(sortedData).forEach(function([k,v]){
+                if(v[1][curr] === undefined){
+                    arr[v[0] + " Not Available"] = 0;
+                    null_index.push(v[0])
+                }
+                else arr[v[0]] = v[1][curr]
+            })
+            
+            setdArr(arr)
+        } else {
+            setdArr({});
+        }
         setIsLoading(false)
     }
 
@@ -130,23 +133,24 @@ export default function LineCharts() {
         });
 
         setSortedDataArray(sortedData)
-        let country_code = countryCode(sortedData)
-        setCurrency_country(Array.from(country_code))
         let minmaxIdx = MaxMin(sortedData, currency)
         setminMax(minmaxIdx)
         let minmaxData = MaxMin2(sortedData, currency)
         setminMaxDate(minmaxData)
-        console.log(minmaxData)
-       
-        Object.entries(sortedData).forEach(function([k,v]){
-            if(v[1][currency] === undefined){
-                arr[v[0]] = undefined;
-                null_index.push(v[0])
-            }
-            else arr[v[0]] = v[1][currency]
-        })
-        
-        setdArr(arr)
+        console.log(isCurrencyExist(sortedData, currency))
+        if(isCurrencyExist(sortedData, currency)){
+            Object.entries(sortedData).forEach(function([k,v]){
+                if(v[1][currency] === undefined){
+                    arr[v[0] + " Not Available"] = 0;
+                    null_index.push(v[0])
+                }
+                else arr[v[0]] = v[1][currency]
+            })
+            
+            setdArr(arr)
+        } else {
+            setdArr({});
+        }
         setIsLoading(false)
     }
 
