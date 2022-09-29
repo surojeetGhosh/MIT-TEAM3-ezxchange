@@ -107,6 +107,7 @@ export const countryCode = (data) => {
 
 export const MaxMin = (data, currency) => {
     const arr = daily(data, currency);
+    console.log(currency)
     const keys_Arr = Object.keys(arr);
     const values_Arr = Object.values(arr);
     let maxIdx = 0;
@@ -117,5 +118,19 @@ export const MaxMin = (data, currency) => {
     })
     // return { Max: [keys_Arr[maxIdx], values_Arr[maxIdx]], Min: [keys_Arr[minIdx], values_Arr[minIdx]]};
     return [minIdx, maxIdx];
+}
 
+export const MaxMin2 = (data, currency) => {
+    const arr = daily(data, currency);
+    console.log(currency)
+    const keys_Arr = Object.keys(arr);
+    const values_Arr = Object.values(arr);
+    let maxIdx = 0;
+    let minIdx = 0;
+    values_Arr.forEach((i, j) => {
+        if(values_Arr[maxIdx] < values_Arr[j]) maxIdx = j;
+        if(values_Arr[minIdx] > values_Arr[j]) minIdx = j;
+    })
+    return { Max: [keys_Arr[maxIdx], values_Arr[maxIdx]], Min: [keys_Arr[minIdx], values_Arr[minIdx]]};
+    // return [minIdx, maxIdx];
 }
