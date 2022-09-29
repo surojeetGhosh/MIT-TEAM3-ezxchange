@@ -12,8 +12,10 @@ export default function LineCharts() {
     const [dArr, setdArr] = useState([])
     async function fetch_data()
     {
+        console.log(`${fetchData.year}`)
         let res_data = await axios.get(`https://ezxchange-755d0-default-rtdb.firebaseio.com/${fetchData.year}.json`)
         setDataArray(res_data)
+        // arr = []
         Object.entries(res_data.data).forEach(function([k,v]){if(v.INR){arr.push(v.INR)}})
         console.log(arr)
         setdArr(arr)
@@ -28,7 +30,7 @@ export default function LineCharts() {
         console.log(e.target.value)
         const { name, value } = e.target
         setFetchData({ ...fetchData, [name]: value })
-        
+        fetch_data()
     }
 
 
