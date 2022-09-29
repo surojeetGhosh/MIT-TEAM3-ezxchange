@@ -1,29 +1,30 @@
 import React, {useState, useEffect} from 'react'
 import '../../src/App.css'
 import Chart from "react-apexcharts"; 
-import { DateTime } from "luxon";
 
 import { yearly } from './routines';
 import { daily } from './routines';
 import { quarter } from './routines';
 import { month } from './routines';
 import { week } from './routines';
+import { countryCode } from './routines';
+import { MaxMin } from './routines';
 const axios = require('axios')
 
 
 export default function LineCharts() {
 
     let null_index = []
-    // const [month, setMonth] = useState(['Jan', 'Feb', 'Mar', 'Apr'])
     const [currency, setCurrency] = useState('INR')
     const [isloading, setIsLoading] = useState(true)
     const [dataArray, setDataArray] = useState(null)
     const [year, setYear] = useState(2022)
     const [select, setSelect] = useState('year')
+    const [minMax, setminMax] = useState([])
     const [sortedDataArray, setSortedDataArray] = useState([])
 
     let arr = []
-    let currency_country = ['INR','AUD','EUR']
+    const [currency_country, setCurrency_country] = useState(['INR','AUD','EUR'])
     
     const [dArr, setdArr] = useState([])
 
@@ -46,7 +47,10 @@ export default function LineCharts() {
             return yeara - yearb || MONTH[montha] - MONTH[monthb] || daya - dayb;
         });
         setSortedDataArray(sortedData)
-        
+        let country_code = countryCode(sortedData)
+        setCurrency_country(Array.from(country_code))
+        let minmaxIdx = MaxMin(sortedData, currency)
+        setminMax(minmaxIdx)
        
         Object.entries(sortedData).forEach(function([k,v]){
             if(v[1][currency] === undefined){
@@ -81,7 +85,10 @@ export default function LineCharts() {
         });
 
         setSortedDataArray(sortedData)
-        
+        let country_code = countryCode(sortedData)
+        setCurrency_country(Array.from(country_code))
+        let minmaxIdx = MaxMin(sortedData, currency)
+        setminMax(minmaxIdx)
        
         Object.entries(sortedData).forEach(function([k,v]){
             if(v[1][curr] === undefined){
@@ -116,7 +123,10 @@ export default function LineCharts() {
         });
 
         setSortedDataArray(sortedData)
-        
+        let country_code = countryCode(sortedData)
+        setCurrency_country(Array.from(country_code))
+        let minmaxIdx = MaxMin(sortedData, currency)
+        setminMax(minmaxIdx)
        
         Object.entries(sortedData).forEach(function([k,v]){
             if(v[1][currency] === undefined){
@@ -141,25 +151,26 @@ export default function LineCharts() {
         if(e.target.value === 'year'){
             let array_yearly = yearly(sortedDataArray, currency)
             setdArr(array_yearly)
-            console.log(array_yearly)
         }
 
         else if(e.target.value === 'quarter'){
             let array_quarterly = quarter(sortedDataArray, currency)
             setdArr(array_quarterly)
-            console.log(array_quarterly)
         }
 
         else if(e.target.value === 'month'){
             let array_monthly = month(sortedDataArray, currency)
             setdArr(array_monthly)
-            console.log(array_monthly)
         }
 
         else if(e.target.value === 'week'){
             let array_weekly = week(sortedDataArray, currency)
             setdArr(array_weekly)
-            console.log(array_weekly)
+        }
+
+        else if(e.target.value === 'daily'){
+            let array_daily = daily(sortedDataArray, currency)
+            setdArr(array_daily)
         }
     }
 
@@ -168,44 +179,19 @@ export default function LineCharts() {
         fetch_data3(e.target.value)
     }
 
-    // const month_arr =['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
-    // const handleQuarterChange = (e)=>{
-    //     const { name, value } = e.target
-    //     setFetchData({ ...fetchData, [name]: value })
-    //     if(e.target.value === 'q1')
-    //     {
-    //         let month_arr2 = month_arr.slice(0, 3)
-    //         setMonth(month_arr2)
-    //     }
-    //     if(e.target.value === 'q2')
-    //     {
-    //         let month_arr2 = month_arr.slice(3, 6)
-    //         setMonth(month_arr2)
-    //     }
-    //     if(e.target.value === 'q3')
-    //     {
-    //         let month_arr2 = month_arr.slice(6, 9)
-    //         setMonth(month_arr2)
-    //     }
-    //     if(e.target.value === 'q4')
-    //     {
-    //         let month_arr2 = month_arr.slice(9, 12)
-    //         setMonth(month_arr2)
-    //     }
-    // }
-
     useEffect(() => {
         fetch_data()
         if(dArr.length!==0){
             setIsLoading(false)
         }
+
       }, dataArray);
 
 
 
     return(
         <div className=''>
-            <div className='container mt-12 w-3/4 mx-auto flex flex-row justify-between items-center'>
+            <div className='container mt-12 w-3/4 mx-auto flex flex-row justify-between items-center shadow-md shadow-gray-500 p-2 rounded-xl'>
                 <div className='flex flex-row justify-start items-center p-2 gap-8'>
                     <select name="currency_1" className='bg-transparent font-[Poppins] font-medium'>
                         <option value="USD" selected className='p-4'>USA</option>
@@ -217,13 +203,11 @@ export default function LineCharts() {
                     </select>
                 </div> 
                 <div className='flex flex-row justify-end items-center p-2 gap-8 font-[Poppins] font-medium'>
-                    {/* <select name="week" className='bg-transparent' value={fetchData.week} onChange={handleFormChange}>
-                        <option value="w1" selected className='p-4'>Week 1</option>
-                        <option value="w2" className='p-4'>Week 2</option>
-                        <option value="w3" className='p-4'>Week 3</option>
-                        <option value="w4" className='p-4'>Week 4</option>
-                    </select> */}
                     <div className='flex flex-row justify-center items-center gap-6' onChange={handleSelectionChange}>
+                        <div className='gap-2 flex flex-row justify-center items-center'> 
+                            <input type="radio" id='daily' value="daily" name='selection' select="selected"></input>
+                            <label for="daily">Daily</label>
+                        </div>
                         <div className='gap-2 flex flex-row justify-center items-center'> 
                             <input type="radio" id='week' value="week" name='selection'></input>
                             <label for="week">Weekly</label>
@@ -242,19 +226,6 @@ export default function LineCharts() {
                         </div>
                     </div>
                     
-                    
-
-                    {/* <select name="month" className='bg-transparent' value={fetchData.month} onChange={handleFormChange}>
-                        {month.map((data, i)=>{
-                           return <option value={i} key={i} selected className='p-4'>{data}</option>
-                        })}
-                    </select>
-                    <select name="quarter" className='bg-transparent' value={fetchData.quarter} onChange={handleQuarterChange}>
-                        <option value="q1" selected className='p-4'>1st quarter</option>
-                        <option value="q2" className='p-4'>2nd quarter</option>
-                        <option value="q3" className='p-4'>3rd quarter</option>
-                        <option value="q4" className='p-4'>4th quarter</option>
-                    </select> */}
                     <select name="year" className='bg-transparent' value={year} onChange={handleYearChange}>
                         <option value="2022" selected className='p-4'>2022</option>
                         <option value="2021" className='p-4'>2021</option>
@@ -274,7 +245,7 @@ export default function LineCharts() {
             <div className='container mx-auto flex flex-col justify-center items-center h-96 w-3/4 mt-4 p-2'>
             {isloading && <img src='spinner.gif' alt='loader' className='mt-36 w-16'></img>}
             
-            {!isloading && <Chart className='w-full h-max p-2'
+            {!isloading && <Chart className='w-full h-max p-2 shadow-md rounded-xl shadow-gray-600'
                     width= {"100%"}
                     height= {"100%"}
                     options ={{chart: {
@@ -374,14 +345,21 @@ export default function LineCharts() {
                         curve:'smooth'
                     },
                     markers: {
-                        discrete: {
-                          seriesIndex: 0,
-                          dataPointIndex: 7,
-                          fillColor: '#ff0000',
-                          strokeColor: '#fff',
-                          size: 5,
-                          shape: "circle"
-                        }
+                        discrete: [{
+                            seriesIndex: 0,
+                            dataPointIndex: minMax[0],
+                            fillColor: '#ff0000',
+                            strokeColor: '#fff',
+                            size: 10,
+                            shape: "circle" 
+                          }, {
+                            seriesIndex: 0,
+                            dataPointIndex: minMax[1],
+                            fillColor: '#00ff00',
+                            strokeColor: '#eee',
+                            size: 10,
+                            shape: "circle"
+                          }]
                       },
                     legend: {
                         position: 'right',
