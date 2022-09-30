@@ -1,4 +1,5 @@
 const arr = [
+    "INR",
     "AFN",
     "DZD",
     "ARS",
@@ -60,7 +61,6 @@ const arr = [
     "HKD",
     "UAH",
     "ISK",
-    "INR",
     "IRR",
     "IQD",
     "JMD",

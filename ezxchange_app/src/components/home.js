@@ -1,13 +1,11 @@
 import React, {useState, useEffect} from 'react'
 import '../../src/App.css'
-
 import Chart from "react-apexcharts"; 
 import { isCurrencyExist, yearly } from './routines';
 import { daily } from './routines';
 import { quarter } from './routines';
 import { month } from './routines';
 import { week } from './routines';
-import { countryCode } from './routines';
 import { MaxMin } from './routines';
 import { MaxMin2 } from './routines';
 import CountryCode from "./CountryCode";
@@ -18,12 +16,13 @@ const axios = require('axios')
 export default function LineCharts() {
 
     let null_index = []
+    const [emptyArr, setEmptyArr] = useState(false)
     const currency_country = CountryCode;
     const [currency, setCurrency] = useState('INR')
     const [isloading, setIsLoading] = useState(true)
     const [dataArray, setDataArray] = useState(null)
     const [year, setYear] = useState(2022)
-    const [select, setSelect] = useState('year')
+    const [select, setSelect] = useState('daily')
     const [minMax, setminMax] = useState([])
     const [minMaxDate, setminMaxDate] = useState({})
     const [sortedDataArray, setSortedDataArray] = useState([])
@@ -59,15 +58,18 @@ export default function LineCharts() {
         if(isCurrencyExist(sortedData, currency)){
             Object.entries(sortedData).forEach(function([k,v]){
                 if(v[1][currency] === undefined){
-                    arr[v[0] + " Not Available"] = null;
+                    arr[v[0] + " NA"] = null;
                     null_index.push(v[0])
                 }
                 else arr[v[0]] = v[1][currency]
             })
             
             setdArr(arr)
+            setEmptyArr(false)
         } else {
-            setdArr({});
+            setdArr([]);
+            setEmptyArr(true)
+            console.log(emptyArr)
         }
         setIsLoading(false)
     }
@@ -94,24 +96,29 @@ export default function LineCharts() {
         setSortedDataArray(sortedData)
         let minmaxIdx = MaxMin(sortedData, curr);
         setminMax(minmaxIdx);
-        let minmaxData = MaxMin2(sortedData, currency)
+        let minmaxData = MaxMin2(sortedData, curr)
         setminMaxDate(minmaxData)
         console.log(isCurrencyExist(sortedData, curr))
         if(isCurrencyExist(sortedData, curr)){
             Object.entries(sortedData).forEach(function([k,v]){
                 if(v[1][curr] === undefined){
-                    arr[v[0] + " Not Available"] = null;
+                    arr[v[0] + " NA"] = null;
                     null_index.push(v[0])
                 }
                 else arr[v[0]] = v[1][curr]
             })
             
             setdArr(arr)
+            setEmptyArr(false)
         } else {
-            setdArr({});
+            setdArr([]);
+            setEmptyArr(true)
+            console.log(emptyArr)
         }
         setIsLoading(false)
     }
+
+    
 
     async function fetch_data3(year_curr)
     {
@@ -141,24 +148,29 @@ export default function LineCharts() {
         if(isCurrencyExist(sortedData, currency)){
             Object.entries(sortedData).forEach(function([k,v]){
                 if(v[1][currency] === undefined){
-                    arr[v[0] + " Not Available"] = null;
+                    arr[v[0] + " NA"] = null;
                     null_index.push(v[0])
                 }
                 else arr[v[0]] = v[1][currency]
             })
             
             setdArr(arr)
+            setEmptyArr(false)
         } else {
-            setdArr({});
+            setdArr([]);
+            setEmptyArr(true)
+            console.log(emptyArr)
         }
         setIsLoading(false)
     }
 
-
+   
     const handleCurrencyChange2 = (e)=>{
         setCurrency(e.target.value)
+        console.log(currency)
         fetch_data2(e.target.value)
     }
+    
 
     const handleSelectionChange = (e)=>{
         setSelect(e.target.value)
@@ -192,13 +204,13 @@ export default function LineCharts() {
         setYear(e.target.value)
         fetch_data3(e.target.value)
     }
-
+ 
     useEffect(() => {
         fetch_data()
         if(dArr.length!==0){
             setIsLoading(false)
         }
-
+        // eslint-disable-next-line
       }, dataArray);
 
 
@@ -208,7 +220,7 @@ export default function LineCharts() {
             <div className='container mt-12 w-3/4 mx-auto flex flex-row justify-between items-center shadow-md shadow-gray-500 p-2 rounded-xl'>
                 <div className='flex flex-row justify-start items-center p-2 gap-8'>
                     <select name="currency_1" className='bg-transparent font-[Poppins] font-medium'>
-                        <option value="USD" selected className='p-4'>USA</option>
+                        <option value="USD" selected className='p-4'>USD</option>
                     </select>
                     <h1 className='font-[Poppins] font-bold'>VS</h1>
                     <select name="currency_2" className='bg-transparent font-[Poppins] font-medium' onChange={handleCurrencyChange2}>
@@ -257,29 +269,29 @@ export default function LineCharts() {
                 </div>
             </div>
             <div className='container mx-auto flex flex-col gap-4 justify-center items-center h-max w-3/4 mt-4 p-2 shadow-sm shadow-gray-500 rounded-xl'>
-                <div className='flex flex-row justify-center items-center'>
-                    <h1 className='font-[Poppins] font-bold text-red py-4 text-xl'>Legends</h1>
-                </div>
-
-                {!isloading && <div className='flex flex-row justify-center items-center gap-6'>
-                    <h1 className='font-[Poppins] font-medium'>Lowest Exchange Rate</h1>
-                    <h1 className='font-[Poppins] font-medium'>{minMaxDate['Max'][0]}</h1>
-                    <h1 className='font-[Poppins] font-medium'>{minMaxDate['Max'][1]}</h1>
+                {!emptyArr && <div className='flex flex-row justify-center items-center'>
+                    <h1 className='font-[Poppins] font-bold text-redtext-xl py-4'>Legends</h1>
                 </div>}
-                {!isloading && <div className='flex flex-row justify-center items-center gap-6'>
-                    <h1 className='font-[Poppins] font-medium'>Highest Exchange Rate</h1>
+
+                {!isloading && minMaxDate!=={} && !emptyArr && <div className='flex flex-row justify-center items-center gap-6'>
+                    <h1 className='font-[Poppins] font-medium'>Lowest Exchange Rate</h1>
                     <h1 className='font-[Poppins] font-medium'>{minMaxDate['Min'][0]}</h1>
                     <h1 className='font-[Poppins] font-medium'>{minMaxDate['Min'][1]}</h1>
                 </div>}
-                {!isloading && select==='daily' && <div className='flex flex-row justify-center items-center gap-6'>
+                {!isloading && minMaxDate!=={} && !emptyArr && <div className='flex flex-row justify-center items-center gap-6'>
+                    <h1 className='font-[Poppins] font-medium'>Highest Exchange Rate</h1>
+                    <h1 className='font-[Poppins] font-medium'>{minMaxDate['Max'][0]}</h1>
+                    <h1 className='font-[Poppins] font-medium'>{minMaxDate['Max'][1]}</h1>
+                </div>}
+                {!isloading && select==='daily' && !emptyArr && <div className='flex flex-row justify-center items-center gap-6'>
                     <h1 className='font-[Poppins] text-red-900 font-bold'>Break in the graph suggests the Exchange rate for the date is not available</h1>
                 </div>}
             </div>
             
             <div className='container mx-auto flex flex-col justify-center items-center h-96 w-3/4 mt-4 p-2'>
                 {isloading && <img src='spinner.gif' alt='loader' className='mt-36 w-16'></img>}
-            
-                {!isloading && select==='daily' && <Chart className='w-full h-max p-2 shadow-md rounded-xl shadow-gray-600'
+                {!isloading && emptyArr && <h1 className='w-full pt-24 text-center h-72 p-2 shadow-md rounded-xl shadow-gray-600 font-[Poppins] text-xl font-bold text-red-700'>No Data Available for {currency} in year {year}</h1>}
+                {!isloading && select==='daily' && dArr!==[] && !emptyArr && <Chart className='w-full h-max p-2 shadow-md rounded-xl shadow-gray-600'
                     width= {"100%"}
                     height= {"100%"}
                     options ={{chart: {
@@ -363,7 +375,7 @@ export default function LineCharts() {
                                 cssClass: 'apexcharts-yaxis-label',
                             }},
                         title: {
-                            text: `Currency`,
+                            text: `Currency ${currency}`,
                             offsetX: 0,
                             offsetY: 0,
                             style: {
@@ -422,7 +434,7 @@ export default function LineCharts() {
 
 
 
-                {!isloading && select!=='daily' && <Chart className='w-full h-max p-2 shadow-md rounded-xl shadow-gray-600'
+                {!isloading && select!=='daily' && !emptyArr && dArr!==[] && <Chart className='w-full h-max p-2 shadow-md rounded-xl shadow-gray-600'
                     width= {"100%"}
                     height= {"100%"}
                     options ={{chart: {
@@ -506,7 +518,7 @@ export default function LineCharts() {
                                 cssClass: 'apexcharts-yaxis-label',
                             }},
                         title: {
-                            text: `Currency`,
+                            text: `Currency ${currency}`,
                             offsetX: 0,
                             offsetY: 0,
                             style: {
@@ -546,13 +558,6 @@ export default function LineCharts() {
 
                     type="line"
                 />}
-
-
-
-
-
-
-
             </div>
         </div>
     )

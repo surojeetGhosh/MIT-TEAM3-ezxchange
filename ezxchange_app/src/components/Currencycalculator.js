@@ -12,7 +12,7 @@ function Currencycalculator() {
     const [rates, setRates] = useState([]);
   
     useEffect(() => {
-      axios.get('https://api.apilayer.com/fixer/latest?base=USD&apikey=OD47jKU22Z9k8Oo9JIwS99BaTPhBBNjK')
+      axios.get('https://api.apilayer.com/fixer/latest?base=USD&apikey=FyhxWCmjc63bgzkNYfE2ZDmB66ki0cQU')
         .then(response => {
           setRates(response.data.rates);
         })
@@ -25,6 +25,7 @@ function Currencycalculator() {
         }
         init();
       }
+      // eslint-disable-next-line
     }, [rates]);
   
   

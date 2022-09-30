@@ -4,8 +4,9 @@ import { useState , useEffect } from 'react';
 import Currencycalculator from '../components/Currencycalculator';
 
 function Basecurrency() {
-
+    // eslint-disable-next-line 
     const [base, setBase] = useState("INR");
+    // eslint-disable-next-line
     const [currency, setcurrency] = useState([]);
     const [ratesList, setRatesList] = useState([]);
 
@@ -14,7 +15,7 @@ function Basecurrency() {
     }, []);
 
     const getrates = async (base) => {
-        const res = await axios.get(`https://api.apilayer.com/fixer/latest?base=${base}&apikey=OD47jKU22Z9k8Oo9JIwS99BaTPhBBNjK`);
+        const res = await axios.get(`https://api.apilayer.com/fixer/latest?base=${base}&apikey=FyhxWCmjc63bgzkNYfE2ZDmB66ki0cQU`);
         const {rates} = res.data;
         const ratestemp = [];
         for (const [symbol, rate] of Object.entries(rates)) {

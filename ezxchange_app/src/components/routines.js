@@ -10,7 +10,7 @@ export const isCurrencyExist = (data, currency) => {
 export const daily = (data, currency) => {
     const arr = {};
     Object.entries(data).forEach(function([k,v]){  // daywise
-        if(v[1][currency] === undefined) arr[v[0]+ " Not Available"] = null;
+        if(v[1][currency] === undefined) arr[v[0]+ " NA"] = null;
         else arr[v[0]] = v[1][currency]
     })
     return arr;
@@ -113,6 +113,7 @@ export const countryCode = (data) => {
 }
 
 export const MaxMin = (data, currency) => {
+    console.log(currency)
     if(isCurrencyExist(data, currency)) {
         const arr = daily(data, currency);
         const keys_Arr = Object.keys(arr);
@@ -126,7 +127,7 @@ export const MaxMin = (data, currency) => {
             if(a[1] > b[1]) return 1;
             else return -1;
         })
-        console.log(sortedObj[0][0], sortedObj[sortedObj.length - 1][0]);
+        // console.log(sortedObj[0][0], sortedObj[sortedObj.length - 1][0]);
         let minIdx = sortedObj[0][0], maxIdx = sortedObj[sortedObj.length - 1][0];
         // return { Max: [keys_Arr[maxIdx], values_Arr[maxIdx]], Min: [keys_Arr[minIdx], values_Arr[minIdx]]};
 
@@ -137,6 +138,7 @@ export const MaxMin = (data, currency) => {
 }
 
 export const MaxMin2 = (data, currency) => {
+    console.log(currency)
     if(isCurrencyExist(data, currency)) {
         const arr = daily(data, currency);
         const keys_Arr = Object.keys(arr);
@@ -150,7 +152,7 @@ export const MaxMin2 = (data, currency) => {
             if(a[1] > b[1]) return 1;
             else return -1;
         })
-        console.log(sortedObj[0][0], sortedObj[sortedObj.length - 1][0]);
+        // console.log(sortedObj[0][0], sortedObj[sortedObj.length - 1][0]);
         let minIdx = sortedObj[0][0], maxIdx = sortedObj[sortedObj.length - 1][0];
         return { Max: [keys_Arr[maxIdx], values_Arr[maxIdx]], Min: [keys_Arr[minIdx], values_Arr[minIdx]]};
     }
